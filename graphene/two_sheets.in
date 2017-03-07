@@ -1,0 +1,44 @@
+# Graphene Sheets
+
+units 		real
+dimension	3
+boundary	p p p
+processors	2 2 1
+
+atom_style 	full
+neighbor 	2.0 bin 
+neigh_modify	delay 0 every 10 check yes page 100000
+
+#Define bond and non-bond interactions
+pair_style	lj/cut 12
+bond_style harmonic
+angle_style harmonic
+##dihedral_style harmonic
+#improper_style cvff
+
+#Read data
+read_data two_sheets.data
+
+#Use a particle-particle particle-mesh kspace
+#kspace_style	pppm 1e-4
+
+#minimize
+#minimize 1.0e-6  0.001 5000 10000
+
+#Initial velocity
+#velocity all create 300 12 rot no dist gaussian
+
+#Restart
+restart 10000 two_sheets_restart
+
+#Thermodynamic data
+thermo		100
+thermo_style	multi
+thermo_modify	lost ignore flush yes
+
+#NPT
+fix 1 all npt temp 300 300 100 iso 1.0 1.0 1000
+# fix   1 all nvt # temp 300 300 100
+timestep	1
+dump		100 all custom 100 two_sheets.lammpstrj id type xs ys zs ix iy iz
+run		20000
