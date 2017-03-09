@@ -1,6 +1,6 @@
 ## Bash utility script
 
-I wrote qnode as an extention to qstat to show longer names, and moreimportantly which nodes each job is running on.
+I wrote qnode as an extention to qstat to show longer job names by default and, more importantly, which nodes each job is running on.
 
  Written for bethel.uakron.edu. Definitely not guaranteed work without minor tweaking on another cluster.
 
