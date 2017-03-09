@@ -7,3 +7,7 @@ kelp_model.cpp calculates the irradiance as a function of position as a PDE usin
 vispy_volume.py is used to visualize the results using vispy. Results are shown in volume_img
 
 Full project description given in summary.pdf
+
+Summer 2016
+REU @ Clarkson University
+w/ Dr. Shane Rogers
