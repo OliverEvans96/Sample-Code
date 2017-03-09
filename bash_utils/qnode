@@ -1,0 +1,35 @@
+#!/bin/bash
+
+
+#Get qstat & pbsnodes
+q=$(full_qstat.py)
+p=$(pbsnodes)
+
+#Get list of job numbers
+jobNumbers=($(echo -e "$q" | awk -F' ' 'BEGIN{OFS=" "} NR>2{print $1}'))
+
+#Iterate through job number indices to find node number, save to jobNodes
+#Read pbsnodes | search for job number including 5 previous lines | print the first line and any lines following '--' | concatenate strings && add space between jobs
+for i in ${!jobNumbers[@]}
+do
+	tmp=$(echo -e "$p" | egrep -B5 "jobs =.*${jobNumbers[i]}.bethel.bw01.uakron.edu")
+	if [ -z "$tmp" ]
+	then
+		tmp="-"
+	fi
+	jobNodes[i]=$(echo "$tmp" | awk 'NR==1{print} /--/{getline;print ","$0}' | xargs printf "%s" && printf " ")
+done
+
+#Call qstat again | remove blank spaces at end with sed | add job nodes to end with awk
+echo -e "$q" | sed 's/\s\{1,\}$//g' | awk -v var="${jobNodes[*]}" '
+
+BEGIN{split(var,list);k=1}
+
+{printf $0}
+
+NR==1 {l=length;printf "  Node"}
+NR==2 {printf "  ----"}
+NR>=3 {for(i=length;i<l;i++) printf " "; printf "  " list[k++]}
+
+{printf "\n"}'
+
